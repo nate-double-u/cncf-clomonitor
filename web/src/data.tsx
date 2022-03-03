@@ -99,8 +99,9 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     legend: <span>List of organizations using this project in production or at stages of testing</span>,
     description: (
       <span>
-        We check that an <code>adopters*</code> <em>(no case sensitive)</em> file exists at the <code>root</code> of the
-        repository or that the <code>README</code> file contains an <strong>adopters</strong> header
+        We check that an <code>adopters*</code> <em>(no case sensitive)</em> or <code>USERS.md</code> file exists at the{' '}
+        <code>root</code> of the repository or that the <code>README</code> file contains an <strong>adopters</strong>{' '}
+        header
       </span>
     ),
   },
@@ -138,11 +139,11 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
   [ReportOption.Changelog]: {
     icon: <CgFileDocument />,
     name: 'Changelog',
-    legend: <span>A curated, chronologically ordered list of notable changes for each version</span>,
+    legend: <span>A curated, chronologically ordered list of notable changes for each version</span>,
     description: (
       <span>
         We check that an <code>changelog*</code> <em>(no case sensitive)</em> file exists at the <code>root</code> of
-        the repository
+        the repository or changelog is within GitHub releases
       </span>
     ),
   },
@@ -158,8 +159,8 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     description: (
       <span>
         We check that a <code>code*of*conduct.md*</code> <em>(no case sensitive)</em> file exists at the{' '}
-        <code>root</code> of the repository or in the <code>docs</code> directory or that the <code>README</code> file
-        contains a <strong>code of conduct</strong> header
+        <code>root</code> of the repository or in the <code>docs</code> directory or <code>.github</code> directories,
+        or that the <code>README</code> file contains a <strong>code of conduct</strong> header
       </span>
     ),
   },
@@ -190,7 +191,7 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     description: (
       <span>
         We check that a <code>contributing*</code> <em>(no case sensitive)</em> file exists at the <code>root</code> of
-        the repository or in the <code>docs</code> directory
+        the repository or in the <code>docs</code> directory or <code>.github</code> directories
       </span>
     ),
   },
@@ -231,7 +232,7 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     ),
     description: (
       <span>
-        We check that the <code>README</code> file contains a FOSSA or Snyk badge. It’s also possible to provide a
+        We check that the <code>README</code> file contains a FOSSA or Snyk badge. It's also possible to provide a
         scanning url in the <code>.clomonitor.yml</code> metadata file
       </span>
     ),

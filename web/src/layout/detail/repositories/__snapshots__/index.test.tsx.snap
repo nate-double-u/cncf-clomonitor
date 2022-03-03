@@ -1242,7 +1242,7 @@ exports[`RepositoriesList creates snapshot 1`] = `
                             class="d-none d-lg-block text-muted text-truncate mt-1 w-100 legend"
                           >
                             <span>
-                              A curated, chronologically ordered list of notable changes for each version
+                              A curated, chronologically ordered list of notable changes for each version
                             </span>
                           </div>
                         </div>
