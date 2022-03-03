@@ -4,6 +4,9 @@ import isArray from 'lodash/isArray';
 import { DEFAULT_SORT_BY, DEFAULT_SORT_DIRECTION } from '../data';
 import { Error, ErrorKind, Project, ProjectDetail, SearchData, SearchQuery } from '../types';
 
+/**
+ * Interface implemented by fetch options
+ */
 interface FetchOptions {
   method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'HEAD';
   headers?: {
@@ -12,18 +15,31 @@ interface FetchOptions {
   body?: any;
 }
 
+/**
+ * Interface implemented by fetch properties
+ */
 interface APIFetchProps {
   url: string;
   opts?: FetchOptions;
   headers?: string[];
 }
 
+/**
+ *  Class to interact with the HTTP API exposed by the backend apiserver
+ */
 class API_CLASS {
   private API_BASE_URL = '/api';
   private HEADERS = {
     pagination: 'Pagination-Total-Count',
   };
 
+  /**
+   * Gets headers
+   * @internal
+   *
+   * @param res - API response
+   * @returns Returns formatted headers
+   */
   private getHeadersValue(res: any, params?: string[]): any {
     if (!isUndefined(params) && params.length > 0) {
       let headers: any = {};
@@ -37,6 +53,13 @@ class API_CLASS {
     return null;
   }
 
+  /**
+   * Asynchronously prepares fetch options
+   * @internal
+   *
+   * @param opts - Fetch options
+   * @returns Returns processed fetch options
+   */
   private async processFetchOptions(opts?: FetchOptions): Promise<FetchOptions | any> {
     let options: FetchOptions | any = opts || {};
     if (opts && ['DELETE', 'POST', 'PUT'].includes(opts.method)) {
@@ -50,6 +73,13 @@ class API_CLASS {
     return options;
   }
 
+  /**
+   * Asynchronously handles API response error
+   * @internal
+   *
+   * @param res - API response
+   * @returns Returns response with proper error format when necessary
+   */
   private async handleErrors(res: any) {
     if (!res.ok) {
       let error: Error;
@@ -72,6 +102,14 @@ class API_CLASS {
     return res;
   }
 
+  /**
+   * Asynchronously prepares API response
+   * @internal
+   *
+   * @param res - API response
+   * @param headers - API headers (optional)
+   * @returns Returns formatted data
+   */
   private async handleContent(res: any, headers?: string[]) {
     let response = res;
 
@@ -96,6 +134,13 @@ class API_CLASS {
     }
   }
 
+  /**
+   * Asynchronously - Fetch wrapper
+   * @internal
+   *
+   * @param props - Fetch options
+   * @returns fetch call
+   */
   private async apiFetch(props: APIFetchProps) {
     let options: FetchOptions | any = await this.processFetchOptions(props.opts);
 
@@ -105,10 +150,23 @@ class API_CLASS {
       .catch((error) => Promise.reject(error));
   }
 
+  /**
+   * Asynchronously fetchs project detail
+   *
+   * @param org - Organization name
+   * @param project - Project name
+   * @returns Returns project detail info if exists
+   */
   public getProjectDetail(org: string, project: string): Promise<ProjectDetail> {
     return this.apiFetch({ url: `${this.API_BASE_URL}/projects/${org}/${project}` });
   }
 
+  /**
+   * Asynchronously searchs projects
+   *
+   * @typeParam query - {@link SearchQuery}
+   * @returns Returns projects list and pagination total count
+   */
   public searchProjects(query: SearchQuery): Promise<{ items: Project[]; 'Pagination-Total-Count': string }> {
     let dataParams: SearchData = {
       limit: query.limit,
@@ -136,5 +194,8 @@ class API_CLASS {
   }
 }
 
+/**
+ * Initializes API wrapper
+ */
 const API = new API_CLASS();
 export default API;

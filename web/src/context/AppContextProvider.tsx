@@ -14,6 +14,9 @@ interface Props {
   children: JSX.Element;
 }
 
+/**
+ * Current CLOMonitor local storage preferences are use as initial state
+ */
 const initialState: AppState = {
   prefs: lsStorage.getPrefs(),
 };
@@ -31,18 +34,39 @@ export const AppContext = createContext<{
   dispatch: () => null,
 });
 
+/**
+ * Updates theme
+ *
+ * @param theme - light or dark
+ */
 export function updateTheme(theme: string) {
   return { type: 'updateTheme', theme };
 }
 
+/**
+ * Updates limit
+ *
+ * @param limit - 20, 40 or 60
+ */
 export function updateLimit(limit: number) {
   return { type: 'updateLimit', limit };
 }
 
+/**
+ * Updates sort
+ *
+ * @param by - {@link SortBy}
+ * @param direction - {@link SortDirection}
+ */
 export function updateSort(by: SortBy, direction: SortDirection) {
   return { type: 'updateSort', by, direction };
 }
 
+/**
+ * Updates active style sheet
+ *
+ * @param current - Style sheet
+ */
 export function updateActiveStyleSheet(current: string) {
   const secondary = getMetaTag('secondaryColor');
   document.getElementsByTagName('html')[0].setAttribute('data-theme', current);
@@ -51,6 +75,12 @@ export function updateActiveStyleSheet(current: string) {
     .setAttribute('content', current === 'light' ? secondary : '#0f0e11');
 }
 
+/**
+ * Apps reducer
+ *
+ * @param state - Initial state
+ * @param action - Action to transform
+ */
 export function appReducer(state: AppState, action: Action) {
   let prefs;
   switch (action.type) {
@@ -105,6 +135,11 @@ export function appReducer(state: AppState, action: Action) {
   }
 }
 
+/**
+ * Apps context provider
+ *
+ * @param props - JSX children
+ */
 function AppContextProvider(props: Props) {
   const activeProfilePrefs = lsStorage.getPrefs();
   const [ctx, dispatch] = useReducer(appReducer, {
@@ -124,6 +159,9 @@ function AppContextProvider(props: Props) {
   return <AppContext.Provider value={{ ctx, dispatch }}>{props.children}</AppContext.Provider>;
 }
 
+/**
+ * Uses app context
+ */
 function useAppContext() {
   return useContext(AppContext);
 }

@@ -12,6 +12,18 @@ const WHITELISTED_FILTER_KEYS = [
   'rating', // Quality rating
 ];
 
+/**
+ * Translates search query string string to search filters
+ *
+ * @param p - query string of the search page
+ * @returns The search filters
+ *
+ * @example
+ * ```
+ * // Returns { text: undefined, filters: { maturity: ['1'] }, pageNumber: 1 }:
+ * buildSearchParams('?page=1&maturity=1');
+ * ```
+ */
 const buildSearchParams = (p: URLSearchParams): SearchFiltersURL => {
   let filters: F = {};
 

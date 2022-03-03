@@ -28,6 +28,9 @@ import {
 export const DEFAULT_SORT_BY = SortBy.Name;
 export const DEFAULT_SORT_DIRECTION = SortDirection.ASC;
 
+/**
+ * Search filters
+ */
 export const FILTERS: FiltersSection[] = [
   {
     name: FilterKind.Maturity,
@@ -83,6 +86,9 @@ export const FILTERS: FiltersSection[] = [
   },
 ];
 
+/**
+ * Linter category icons
+ */
 export const CATEGORY_ICONS = {
   [ScoreType.BestPractices]: <RiShieldStarLine />,
   [ScoreType.Documentation]: <HiOutlinePencilAlt />,
@@ -92,6 +98,9 @@ export const CATEGORY_ICONS = {
   [ScoreType.Security]: <BiLock />,
 };
 
+/**
+ * Linter checks information
+ */
 export const REPORT_OPTIONS: ReportOptionInfo = {
   [ReportOption.Adopters]: {
     icon: <ImOffice />,

@@ -1,8 +1,9 @@
 {
   "extends": ["react-app", "plugin:prettier/recommended"],
-  "plugins": ["simple-import-sort"],
+  "plugins": ["simple-import-sort", "eslint-plugin-tsdoc"],
   "rules": {
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "tsdoc/syntax": "warn"
   }
 }

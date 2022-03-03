@@ -9,12 +9,18 @@ interface ColorItem {
   color: string;
 }
 
+/**
+ * Class to build app theme with colors from meta tags
+ */
 class ThemeBuilder {
   private primary: string | null = null;
   private secondary: string | null = null;
   private customColors: ColorItem[] = [];
   private sheet: CSSStyleSheet | null = null;
 
+  /**
+   * Inits theme builder
+   */
   public init() {
     this.primary = getMetaTag('primaryColor');
     this.secondary = getMetaTag('secondaryColor');
@@ -23,6 +29,10 @@ class ThemeBuilder {
     this.applyColors();
   }
 
+  /**
+   * Creates style sheet
+   * @internal
+   */
   private createStyleSheet() {
     const style = document.createElement('style');
     style.appendChild(document.createTextNode(''));
@@ -30,6 +40,10 @@ class ThemeBuilder {
     this.sheet = style.sheet;
   }
 
+  /**
+   * Prepares custom colors
+   * @internal
+   */
   private prepareCustomColors() {
     if (!isNull(this.primary) && tinycolor(this.primary).isValid()) {
       this.customColors.push({ name: '--rm-primary', color: this.primary });
@@ -58,6 +72,9 @@ class ThemeBuilder {
     }
   }
 
+  /**
+   * Applys colors inserting light theme rule
+   */
   public applyColors() {
     if (!isNull(this.sheet)) {
       const colorsList = this.customColors.map((item: ColorItem) => `${item.name}: ${item.color};`);
@@ -66,5 +83,8 @@ class ThemeBuilder {
   }
 }
 
+/**
+ * Initializes theme builder
+ */
 const themeBuilder = new ThemeBuilder();
 export default themeBuilder;

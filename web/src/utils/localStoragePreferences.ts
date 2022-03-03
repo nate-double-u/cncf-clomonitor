@@ -23,6 +23,9 @@ const DEFAULT_PREFS: Prefs = {
   theme: { effective: DEFAULT_THEME },
 };
 
+/**
+ * Available migrations list
+ */
 const migrations: Migration[] = [
   {
     key: 1,
@@ -42,6 +45,12 @@ const migrations: Migration[] = [
   },
 ];
 
+/**
+ * Applies all necessary migrations to current preferences
+ *
+ * @param lsActual - Current {@link PreferencesList}
+ * @returns Preferences with applied migrations when necessary
+ */
 export const applyMigrations = (lsActual: PreferencesList): PreferencesList => {
   let lsUpdated: PreferencesList = { ...lsActual };
   if (isEmpty(lsUpdated)) {
@@ -75,14 +84,25 @@ export const applyMigrations = (lsActual: PreferencesList): PreferencesList => {
   return lsUpdated;
 };
 
+/**
+ * Checks last applied migration
+ *
+ * @returns Migration number
+ */
 const getLastMigrationNumber = (): number => {
   const sortedMigrations = sortBy(migrations, 'key');
   return sortedMigrations[sortedMigrations.length - 1].key;
 };
 
+/**
+ *  Class to handle CLOMonitor local storage preferences
+ */
 export class LocalStoragePreferences {
   private savedPreferences: PreferencesList = { guest: DEFAULT_PREFS };
 
+  /**
+   * Creates an instance of CLOMonitor local storage preferences using saved ones or default
+   */
   constructor() {
     try {
       const preferences = window.localStorage.getItem(LS_ITEM);
@@ -96,6 +116,11 @@ export class LocalStoragePreferences {
     }
   }
 
+  /**
+   * Sets CLOMonitor preferences
+   *
+   * @param prefs - {@link Prefs}
+   */
   public setPrefs(prefs: Prefs) {
     let preferences = { ...this.savedPreferences, guest: prefs };
     this.savedPreferences = preferences;
@@ -107,6 +132,9 @@ export class LocalStoragePreferences {
     }
   }
 
+  /**
+   * Gets saved CLOMonitor preferences
+   */
   public getPrefs(): Prefs {
     let prefs: Prefs = {
       ...DEFAULT_PREFS,
@@ -116,5 +144,8 @@ export class LocalStoragePreferences {
   }
 }
 
+/**
+ * Initializes ClOMonitor local storage preferences
+ */
 const lsPreferences = new LocalStoragePreferences();
 export default lsPreferences;
