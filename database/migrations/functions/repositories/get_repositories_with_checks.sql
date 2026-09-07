@@ -8,7 +8,6 @@ returns setof text as $$
             r.url as repository_url,
             r.check_sets,
             (rp.data->'documentation'->'adopters'->'passed')::boolean as adopters,
-            (rp.data->'documentation'->'agent_readiness'->'passed')::boolean as agent_readiness,
             (rp.data->'documentation'->'changelog'->'passed')::boolean as changelog,
             (rp.data->'documentation'->'code_of_conduct'->'passed')::boolean as code_of_conduct,
             (rp.data->'documentation'->'contributing'->'passed')::boolean as contributing,
@@ -18,6 +17,13 @@ returns setof text as $$
             (rp.data->'documentation'->'roadmap'->'passed')::boolean as roadmap,
             (rp.data->'documentation'->'summary_table'->'passed')::boolean as summary_table,
             (rp.data->'documentation'->'website'->'passed')::boolean as website,
+            (rp.data->'agent_readiness'->'authentication'->'passed')::boolean as authentication,
+            (rp.data->'agent_readiness'->'content_discoverability'->'passed')::boolean as content_discoverability,
+            (rp.data->'agent_readiness'->'content_structure'->'passed')::boolean as content_structure,
+            (rp.data->'agent_readiness'->'markdown_availability'->'passed')::boolean as markdown_availability,
+            (rp.data->'agent_readiness'->'observability'->'passed')::boolean as observability,
+            (rp.data->'agent_readiness'->'page_size'->'passed')::boolean as page_size,
+            (rp.data->'agent_readiness'->'url_stability'->'passed')::boolean as url_stability,
             (rp.data->'license'->'license_approved'->'passed')::boolean as license_approved,
             (rp.data->'license'->'license_scanning'->'passed')::boolean as license_scanning,
             coalesce((rp.data->'license'->'license_spdx_id'->>'value')::text, 'Not detected') as license_spdx_id,
@@ -51,7 +57,7 @@ returns setof text as $$
         join report rp using (repository_id)
         order by p.foundation_id asc, p.name asc
     )
-    select 'Foundation,Project,Repository URL,Check Sets,Adopters,Agent Readiness,Changelog,Code of Conduct,Contributing,Governance,Maintainers,Readme,Roadmap,Summary Table,Website,License Approved,License Scanning,License SPDX ID,Analytics,ArtifactHub Badge,CLA,Community Meeting,DCO,GitHub discussions,OpenSSF best practices badge,OpenSSF Scorecard badge,Recent Release,Slack Presence,Binary Artifacts,Code Review,Dangerous Workflow,Dependencies Policy,Dependency Update Tool,Maintained,SBOM,Security Insights,Security Policy,Signed Releases,Token Permissions,Trademark Disclaimer'
+    select 'Foundation,Project,Repository URL,Check Sets,Adopters,Changelog,Code of Conduct,Contributing,Governance,Maintainers,Readme,Roadmap,Summary Table,Website,Authentication,Content Discoverability,Content Structure,Markdown Availability,Observability,Page Size,URL Stability,License Approved,License Scanning,License SPDX ID,Analytics,ArtifactHub Badge,CLA,Community Meeting,DCO,GitHub discussions,OpenSSF best practices badge,OpenSSF Scorecard badge,Recent Release,Slack Presence,Binary Artifacts,Code Review,Dangerous Workflow,Dependencies Policy,Dependency Update Tool,Maintained,SBOM,Security Insights,Security Policy,Signed Releases,Token Permissions,Trademark Disclaimer'
     union all
     select rtrim(ltrim(r.*::text, '('), ')') from repositories r;
 $$ language sql;

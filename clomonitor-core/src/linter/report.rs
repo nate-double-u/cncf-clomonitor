@@ -6,6 +6,8 @@ use super::{CheckOutput, check::CheckId, checks::*};
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Report {
     pub documentation: Documentation,
+    #[serde(default)]
+    pub agent_readiness: AgentReadiness,
     pub license: License,
     pub best_practices: BestPractices,
     pub security: Security,
@@ -56,7 +58,6 @@ impl Report {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Documentation {
     pub adopters: Option<CheckOutput>,
-    pub agent_readiness: Option<CheckOutput>,
     pub changelog: Option<CheckOutput>,
     pub code_of_conduct: Option<CheckOutput>,
     pub contributing: Option<CheckOutput>,
@@ -72,7 +73,6 @@ pub struct Documentation {
 section_impl!(
     Documentation,
     adopters,
-    agent_readiness,
     changelog,
     code_of_conduct,
     contributing,
@@ -82,6 +82,30 @@ section_impl!(
     roadmap,
     summary_table,
     website
+);
+
+/// AgentReadiness section of the report.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AgentReadiness {
+    pub authentication: Option<CheckOutput>,
+    pub content_discoverability: Option<CheckOutput>,
+    pub content_structure: Option<CheckOutput>,
+    pub markdown_availability: Option<CheckOutput>,
+    pub observability: Option<CheckOutput>,
+    pub page_size: Option<CheckOutput>,
+    pub url_stability: Option<CheckOutput>,
+}
+
+#[rustfmt::skip]
+section_impl!(
+    AgentReadiness,
+    authentication,
+    content_discoverability,
+    content_structure,
+    markdown_availability,
+    observability,
+    page_size,
+    url_stability
 );
 
 /// License section of the report.

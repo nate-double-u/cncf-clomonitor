@@ -3,15 +3,17 @@ use std::{collections::HashMap, sync::LazyLock};
 use crate::linter::check::{CheckConfig, CheckId};
 
 pub(crate) mod adopters;
-pub(crate) mod agent_readiness;
 pub(crate) mod analytics;
 pub(crate) mod artifacthub_badge;
+pub(crate) mod authentication;
 pub(crate) mod binary_artifacts;
 pub(crate) mod changelog;
 pub(crate) mod cla;
 pub(crate) mod code_of_conduct;
 pub(crate) mod code_review;
 pub(crate) mod community_meeting;
+pub(crate) mod content_discoverability;
+pub(crate) mod content_structure;
 pub(crate) mod contributing;
 pub(crate) mod dangerous_workflow;
 pub(crate) mod datasource;
@@ -25,8 +27,11 @@ pub(crate) mod license_scanning;
 pub(crate) mod license_spdx_id;
 pub(crate) mod maintained;
 pub(crate) mod maintainers;
+pub(crate) mod markdown_availability;
+pub(crate) mod observability;
 pub(crate) mod openssf_badge;
 pub(crate) mod openssf_scorecard_badge;
+pub(crate) mod page_size;
 pub(crate) mod readme;
 pub(crate) mod recent_release;
 pub(crate) mod roadmap;
@@ -38,6 +43,7 @@ pub(crate) mod slack_presence;
 pub(crate) mod summary_table;
 pub(crate) mod token_permissions;
 pub(crate) mod trademark_disclaimer;
+pub(crate) mod url_stability;
 pub(crate) mod util;
 pub(crate) mod website;
 
@@ -68,15 +74,17 @@ pub(crate) static CHECKS: LazyLock<HashMap<CheckId, CheckConfig>> = LazyLock::ne
     }
 
     register_check!(adopters);
-    register_check!(agent_readiness);
     register_check!(analytics);
     register_check!(artifacthub_badge);
+    register_check!(authentication);
     register_check!(binary_artifacts, "Binary-Artifacts");
     register_check!(changelog);
     register_check!(cla);
     register_check!(code_of_conduct);
     register_check!(code_review, "Code-Review");
     register_check!(community_meeting);
+    register_check!(content_discoverability);
+    register_check!(content_structure);
     register_check!(contributing);
     register_check!(dangerous_workflow, "Dangerous-Workflow");
     register_check!(dco);
@@ -89,8 +97,11 @@ pub(crate) static CHECKS: LazyLock<HashMap<CheckId, CheckConfig>> = LazyLock::ne
     register_check!(license_spdx_id);
     register_check!(maintained, "Maintained");
     register_check!(maintainers);
+    register_check!(markdown_availability);
+    register_check!(observability);
     register_check!(openssf_badge);
     register_check!(openssf_scorecard_badge);
+    register_check!(page_size);
     register_check!(readme);
     register_check!(recent_release);
     register_check!(roadmap);
@@ -102,6 +113,7 @@ pub(crate) static CHECKS: LazyLock<HashMap<CheckId, CheckConfig>> = LazyLock::ne
     register_check!(summary_table);
     register_check!(token_permissions, "Token-Permissions");
     register_check!(trademark_disclaimer);
+    register_check!(url_stability);
     register_check!(website);
 
     checks

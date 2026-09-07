@@ -56,6 +56,14 @@ const CategoriesSummary = (props: Props) => {
             scrollIntoView={activeLink ? props.scrollIntoView : undefined}
           />
           <CategoryProgressbar
+            name="Agent Readiness"
+            value={props.score.agent_readiness}
+            icon={CATEGORY_ICONS[ScoreType.AgentReadiness]}
+            bigSize={props.bigSize}
+            linkTo={activeLink ? `${props.repoName}_${ScoreType.AgentReadiness}` : undefined}
+            scrollIntoView={activeLink ? props.scrollIntoView : undefined}
+          />
+          <CategoryProgressbar
             name="License"
             value={props.score.license}
             icon={CATEGORY_ICONS[ScoreType.License]}

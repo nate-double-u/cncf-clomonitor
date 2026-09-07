@@ -36,7 +36,7 @@ Checks are organized in `check sets`. Each `check set` defines a number of check
 
 The CLOMonitor's linter can also be run locally or from CI workflows. This can be done by using the [container image](https://gallery.ecr.aws/clomonitor/linter) provided or by building the CLI tool from the source.
 
-CLOMonitor delegates some of the security checks to [OpenSSF Scorecard](https://github.com/ossf/scorecard). When building from the source, you'll need to [install it](https://github.com/ossf/scorecard#installation) before running `clomonitor-linter` locally. The container image already includes the `scorecard` binary, so if you opt for using it you are ready to go.
+CLOMonitor delegates some of the security checks to [OpenSSF Scorecard](https://github.com/ossf/scorecard) and the agent readiness checks to [AFDocs](https://afdocs.dev). When building from the source, you'll need to install them ([scorecard](https://github.com/ossf/scorecard#installation), [afdocs](https://www.npmjs.com/package/afdocs)) before running `clomonitor-linter` locally. The container image already includes both binaries, so if you opt for using it you are ready to go.
 
 Both CLOMonitor and Scorecard use the GitHub GraphQL API for some checks, which requires authentication. A GitHub token (with `public_repo` scope) **must** be provided via the `GITHUB_TOKEN` environment variable to authenticate those requests.
 

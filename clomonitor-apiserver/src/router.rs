@@ -723,9 +723,11 @@ mod tests {
                     check_sets: vec![CheckSet::Code],
                     score: Some(Score {
                         global: 99.999_999_999_999_99,
-                        global_weight: 5,
+                        global_weight: 6,
                         documentation: Some(100.0),
                         documentation_weight: Some(1),
+                        agent_readiness: Some(100.0),
+                        agent_readiness_weight: Some(1),
                         license: Some(100.0),
                         license_weight: Some(1),
                         best_practices: Some(100.0),
@@ -738,7 +740,6 @@ mod tests {
                     report: Some(Report {
                         documentation: Documentation {
                             adopters: Some(CheckOutput::passed()),
-                            agent_readiness: Some(CheckOutput::passed()),
                             code_of_conduct: Some(CheckOutput::passed()),
                             contributing: Some(CheckOutput::passed()),
                             changelog: Some(CheckOutput::passed()),
@@ -748,6 +749,15 @@ mod tests {
                             roadmap: Some(CheckOutput::passed()),
                             summary_table: Some(CheckOutput::passed()),
                             website: Some(CheckOutput::passed()),
+                        },
+                        agent_readiness: AgentReadiness {
+                            authentication: Some(CheckOutput::passed()),
+                            content_discoverability: Some(CheckOutput::passed()),
+                            content_structure: Some(CheckOutput::passed()),
+                            markdown_availability: Some(CheckOutput::passed()),
+                            observability: Some(CheckOutput::passed()),
+                            page_size: Some(CheckOutput::passed()),
+                            url_stability: Some(CheckOutput::passed()),
                         },
                         license: License {
                             license_approved: Some(CheckOutput::passed()),

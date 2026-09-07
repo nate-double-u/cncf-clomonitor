@@ -51,6 +51,10 @@ const Summary = (props: Props) => {
               <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Documentation</span>
             </th>
             <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
+              <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.AgentReadiness]}</small>
+              <span className="d-none d-xl-inline-block ms-1 ms-xl-2">Agent Readiness</span>
+            </th>
+            <th scope="col" className="d-none d-md-table-cell text-center text-nowrap">
               <small className={`position-relative ${styles.icon}`}>{CATEGORY_ICONS[ScoreType.License]}</small>
               <span className="d-none d-xl-inline-block ms-1 ms-xl-2">License</span>
             </th>
@@ -96,6 +100,11 @@ const Summary = (props: Props) => {
                 <BadgeCell
                   value={!isUndefined(repo.score) ? repo.score.documentation : undefined}
                   onClick={() => goToAnchor(`${repo.name}_${ScoreType.Documentation}`)}
+                />
+
+                <BadgeCell
+                  value={!isUndefined(repo.score) ? repo.score.agent_readiness : undefined}
+                  onClick={() => goToAnchor(`${repo.name}_${ScoreType.AgentReadiness}`)}
                 />
 
                 <BadgeCell

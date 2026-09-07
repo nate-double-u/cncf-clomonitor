@@ -982,6 +982,13 @@ const StatsView = () => {
                                     data={stats.repositories.passing_check.documentation}
                                     onSelectCheck={selectCheck}
                                   />
+                                  {!isUndefined(stats.repositories.passing_check.agent_readiness) && (
+                                    <Checks
+                                      title="Agent Readiness"
+                                      data={stats.repositories.passing_check.agent_readiness}
+                                      onSelectCheck={selectCheck}
+                                    />
+                                  )}
                                   <Checks
                                     title="License"
                                     data={stats.repositories.passing_check.license}

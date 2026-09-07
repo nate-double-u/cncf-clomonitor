@@ -17,7 +17,7 @@ insert into project (
     '00000000-0001-0000-0000-000000000000',
     'project1',
     'category1',
-    '{"global": 95.0, "license": 100.0, "security": 100.0, "documentation": 80.0, "best_practices": 100.0}',
+    '{"global": 95.0, "license": 100.0, "security": 100.0, "documentation": 80.0, "agent_readiness": 90.0, "best_practices": 100.0}',
     'a',
     '2022-02-25',
     'sandbox',
@@ -36,7 +36,7 @@ insert into project (
     '00000000-0002-0000-0000-000000000000',
     'project2',
     'category1',
-    '{"global": 70.0, "license": 80.0, "security": 60.0, "documentation": 70.0, "best_practices": 70.0}',
+    '{"global": 70.0, "license": 80.0, "security": 60.0, "documentation": 70.0, "agent_readiness": 60.0, "best_practices": 70.0}',
     'b',
     '2021-02-24',
     'graduated',
@@ -108,6 +108,30 @@ insert into report (
 ) values (
     '00000000-0000-0000-0001-000000000000',
     '{
+        "agent_readiness": {
+            "authentication": {
+                "passed": true
+            },
+            "content_discoverability": {
+                "url": "https://www.fluentd.org/llms.txt",
+                "passed": true
+            },
+            "content_structure": {
+                "passed": false
+            },
+            "markdown_availability": {
+                "passed": true
+            },
+            "observability": {
+                "passed": false
+            },
+            "page_size": {
+                "passed": true
+            },
+            "url_stability": {
+                "passed": true
+            }
+        },
         "legal": {
             "trademark_disclaimer": {
                 "passed": false
@@ -179,10 +203,6 @@ insert into report (
             },
             "adopters": {
                 "url": "https://github.com/fluent/fluentd/blob/master/ADOPTERS.md",
-                "passed": true
-            },
-            "agent_readiness": {
-                "url": "https://www.fluentd.org/llms.txt",
                 "passed": true
             },
             "changelog": {
@@ -253,6 +273,29 @@ insert into report (
 ) values (
     '00000000-0000-0000-0002-000000000000',
     '{
+        "agent_readiness": {
+            "authentication": {
+                "passed": true
+            },
+            "content_discoverability": {
+                "passed": false
+            },
+            "content_structure": {
+                "passed": false
+            },
+            "markdown_availability": {
+                "passed": false
+            },
+            "observability": {
+                "passed": false
+            },
+            "page_size": {
+                "passed": true
+            },
+            "url_stability": {
+                "passed": true
+            }
+        },
         "legal": {
             "trademark_disclaimer": {
                 "passed": false
@@ -324,10 +367,6 @@ insert into report (
             },
             "adopters": {
                 "url": "https://github.com/fluent/fluentd/blob/master/ADOPTERS.md",
-                "passed": true
-            },
-            "agent_readiness": {
-                "url": "https://www.fluentd.org/llms.txt",
                 "passed": true
             },
             "changelog": {
@@ -465,9 +504,6 @@ insert into report (
             "adopters": {
                 "passed": false
             },
-            "agent_readiness": {
-                "passed": false
-            },
             "changelog": {
                 "passed": false
             },
@@ -575,18 +611,21 @@ select is(
                     "license": 77,
                     "security": 73,
                     "documentation": 73,
+                    "agent_readiness": 75,
                     "best_practices": 70
                 },
                 "graduated": {
                     "license": 65,
                     "security": 60,
                     "documentation": 70,
+                    "agent_readiness": 60,
                     "best_practices": 55
                 },
                 "sandbox": {
                     "license": 100,
                     "security": 100,
                     "documentation": 80,
+                    "agent_readiness": 90,
                     "best_practices": 100
                 }
             }
@@ -595,7 +634,6 @@ select is(
             "passing_check": {
                 "documentation": {
                     "adopters": 67,
-                    "agent_readiness": 67,
                     "changelog": 67,
                     "code_of_conduct": 67,
                     "contributing": 67,
@@ -605,6 +643,15 @@ select is(
                     "roadmap": 0,
                     "summary_table": 0,
                     "website": 67
+                },
+                "agent_readiness": {
+                    "authentication": 100,
+                    "content_discoverability": 50,
+                    "content_structure": 0,
+                    "markdown_availability": 50,
+                    "observability": 0,
+                    "page_size": 100,
+                    "url_stability": 100
                 },
                 "license": {
                     "license_approved": 67,

@@ -4,7 +4,15 @@ import { vi } from 'vitest';
 import Average from './Average';
 
 const defaultProps = {
-  data: { documentation: 85, license: 79, best_practices: 57, security: 53, legal: 40, global: 69 },
+  data: {
+    documentation: 85,
+    agent_readiness: 48,
+    license: 79,
+    best_practices: 57,
+    security: 53,
+    legal: 40,
+    global: 69,
+  },
   title: 'Sandbox',
 };
 
@@ -26,6 +34,8 @@ describe('Average', () => {
       expect(screen.getByText('Sandbox')).toBeInTheDocument();
       expect(screen.getByText('Documentation')).toBeInTheDocument();
       expect(screen.getByText('85%')).toBeInTheDocument();
+      expect(screen.getByText('Agent Readiness')).toBeInTheDocument();
+      expect(screen.getByText('48%')).toBeInTheDocument();
       expect(screen.getByText('License')).toBeInTheDocument();
       expect(screen.getByText('79%')).toBeInTheDocument();
       expect(screen.getByText('Best Practices')).toBeInTheDocument();
@@ -35,7 +45,7 @@ describe('Average', () => {
       expect(screen.getByText('Legal')).toBeInTheDocument();
       expect(screen.getByText('40%')).toBeInTheDocument();
 
-      expect(screen.getAllByRole('progressbar')).toHaveLength(5);
+      expect(screen.getAllByRole('progressbar')).toHaveLength(6);
     });
   });
 });

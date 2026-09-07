@@ -44,7 +44,6 @@ Checks are organized in `check sets`. Each `check set` defines a number of check
 - **community** (recommended for repositories with community content)
 
   - Documentation / Adopters
-  - Documentation / Agent readiness
   - Documentation / Code of conduct
   - Documentation / Contributing
   - Documentation / Governance
@@ -52,6 +51,13 @@ Checks are organized in `check sets`. Each `check set` defines a number of check
   - Documentation / Roadmap
   - Documentation / Summary table
   - Documentation / Website
+  - Agent readiness / Authentication
+  - Agent readiness / Content discoverability
+  - Agent readiness / Content structure
+  - Agent readiness / Markdown availability
+  - Agent readiness / Observability
+  - Agent readiness / Page size
+  - Agent readiness / URL stability
   - Best practices / Analytics
   - Best practices / Community meeting
   - Best practices / GitHub discussions
@@ -61,8 +67,14 @@ Checks are organized in `check sets`. Each `check set` defines a number of check
 
 - **docs** (recommended for other documentation repositories)
 
-  - Documentation / Agent readiness
   - Documentation / Readme
+  - Agent readiness / Authentication
+  - Agent readiness / Content discoverability
+  - Agent readiness / Content structure
+  - Agent readiness / Markdown availability
+  - Agent readiness / Observability
+  - Agent readiness / Page size
+  - Agent readiness / URL stability
   - License
   - License / Approved
 
@@ -104,36 +116,6 @@ CASE SENSITIVE: false
 "(?im)^adopters$"
 "(?i)\[.*adopters.*\]\(.*\)"
 ```
-
-### Agent readiness
-
-**ID**: `agent_readiness`
-
-Whether the project's documentation provides an [llms.txt](https://llmstxt.org) index so AI agents can discover and consume it.
-
-AI coding agents read project documentation in real time while helping developers. An `llms.txt` file at the website's root gives them a curated index of the documentation available. The `llms-full.txt` variant, which inlines the full documentation content, is also accepted.
-
-This check passes if:
-
-- An llms.txt *file* is served from the project's *website*. The website used will be the one configured in the GitHub repository. URLs checked (responses containing an HTML document, like SPA fallback pages, are not considered valid):
-
-```sh
-"<website>/llms.txt"
-"<website>/llms-full.txt"
-```
-
-- An llms.txt *file* is found in the repository. Globs used:
-
-```sh
-"llms.txt"
-"llms-full.txt"
-"docs/llms.txt"
-"docs/llms-full.txt"
-
-CASE SENSITIVE: false
-```
-
-For a deeper audit of how well AI agents can consume your documentation, see the [Agent-Friendly Documentation Spec](https://agentdocsspec.com) and the [AFDocs](https://afdocs.dev) tool.
 
 ### Changelog
 
@@ -346,6 +328,68 @@ A url that users can visit to learn more about your project.
 This check passes if:
 
 - A website *url* is configured in the Github repository.
+
+## Agent readiness
+
+The checks in this category evaluate how well AI agents can discover and consume the project's documentation. CLOMonitor delegates them to [AFDocs](https://afdocs.dev), the reference implementation of the [Agent-Friendly Documentation Spec](https://agentdocsspec.com), which is run on the project's *website* (the one configured in the GitHub repository). When the repository has no website configured, this category is not applicable and won't be displayed.
+
+Each check corresponds to an AFDocs category and passes when none of the checks in it fail (warnings are tolerated). When AFDocs skips all the checks in a category, the check is marked as exempt.
+
+### Authentication
+
+**ID**: `authentication`
+
+The project's documentation should be accessible to AI agents without authentication gates or paywalls.
+
+*This is an AFDocs check. For more details, please see the [authentication and access](https://agentdocsspec.com/spec/#category-7-authentication-and-access) category documentation in the Agent-Friendly Documentation Spec.*
+
+### Content discoverability
+
+**ID**: `content_discoverability`
+
+The project's website should provide a valid [llms.txt](https://llmstxt.org) index so AI agents can discover its documentation.
+
+*This is an AFDocs check. For more details, please see the [content discoverability](https://agentdocsspec.com/spec/#category-1-content-discoverability) category documentation in the Agent-Friendly Documentation Spec.*
+
+### Content structure
+
+**ID**: `content_structure`
+
+The project's documentation content should be well structured, with quality section headers and valid code blocks.
+
+*This is an AFDocs check. For more details, please see the [content structure](https://agentdocsspec.com/spec/#category-4-content-structure) category documentation in the Agent-Friendly Documentation Spec.*
+
+### Markdown availability
+
+**ID**: `markdown_availability`
+
+The project's documentation pages should be available as Markdown for AI agents to consume.
+
+*This is an AFDocs check. For more details, please see the [markdown availability](https://agentdocsspec.com/spec/#category-2-markdown-availability) category documentation in the Agent-Friendly Documentation Spec.*
+
+### Observability
+
+**ID**: `observability`
+
+The project's website llms.txt index should cover its documentation pages, and their Markdown version should match the HTML one.
+
+*This is an AFDocs check. For more details, please see the [observability and content health](https://agentdocsspec.com/spec/#category-6-observability-and-content-health) category documentation in the Agent-Friendly Documentation Spec.*
+
+### Page size
+
+**ID**: `page_size`
+
+The project's documentation pages should be reasonably sized and not require JavaScript to render their content.
+
+*This is an AFDocs check. For more details, please see the [page size and truncation risk](https://agentdocsspec.com/spec/#category-3-page-size-and-truncation-risk) category documentation in the Agent-Friendly Documentation Spec.*
+
+### URL stability
+
+**ID**: `url_stability`
+
+The project's documentation URLs should be stable and use proper HTTP status codes and redirects.
+
+*This is an AFDocs check. For more details, please see the [URL stability and redirects](https://agentdocsspec.com/spec/#category-5-url-stability-and-redirects) category documentation in the Agent-Friendly Documentation Spec.*
 
 ## License
 

@@ -126,6 +126,7 @@ export enum FilterKind {
 }
 
 export enum ScoreType {
+  AgentReadiness = 'agent_readiness',
   BestPractices = 'best_practices',
   Documentation = 'documentation',
   Global = 'global',
@@ -146,16 +147,18 @@ export enum SortBy {
 
 export enum ReportOption {
   Adopters = 'adopters',
-  AgentReadiness = 'agent_readiness',
   Analytics = 'analytics',
   ApprovedLicense = 'license_approved',
   ArtifactHubBadge = 'artifacthub_badge',
+  Authentication = 'authentication',
   BinaryArtifacts = 'binary_artifacts',
   Changelog = 'changelog',
   CLA = 'cla',
   CodeOfConduct = 'code_of_conduct',
   CodeReview = 'code_review',
   CommunityMeeting = 'community_meeting',
+  ContentDiscoverability = 'content_discoverability',
+  ContentStructure = 'content_structure',
   Contributing = 'contributing',
   DangerousWorkflow = 'dangerous_workflow',
   DependenciesPolicy = 'dependencies_policy',
@@ -166,8 +169,11 @@ export enum ReportOption {
   LicenseScanning = 'license_scanning',
   Maintained = 'maintained',
   Maintainers = 'maintainers',
+  MarkdownAvailability = 'markdown_availability',
+  Observability = 'observability',
   OpenSSFBadge = 'openssf_badge',
   OpenSSFScorecardBadge = 'openssf_scorecard_badge',
+  PageSize = 'page_size',
   Readme = 'readme',
   RecentRelease = 'recent_release',
   Roadmap = 'roadmap',
@@ -180,6 +186,7 @@ export enum ReportOption {
   SummaryTable = 'summary_table',
   TokenPermissions = 'token_permissions',
   TrademarkDisclaimer = 'trademark_disclaimer',
+  UrlStability = 'url_stability',
   Website = 'website',
 }
 

@@ -2,7 +2,20 @@ import { ExternalLink } from 'clo-ui/components/ExternalLink';
 import { Foundation } from 'clo-ui/components/Foundation';
 import { Maturity } from 'clo-ui/components/Maturity';
 import { SampleQuery } from 'clo-ui/components/SampleQueries';
-import { BiLock, BiMedal, BiShieldQuarter, BiTable, BiTrophy, BiWorld } from 'react-icons/bi';
+import {
+  BiCompass,
+  BiFile,
+  BiKey,
+  BiLink,
+  BiLock,
+  BiMedal,
+  BiPulse,
+  BiShieldQuarter,
+  BiSitemap,
+  BiTable,
+  BiTrophy,
+  BiWorld,
+} from 'react-icons/bi';
 import { BsCalendar3, BsUiChecks } from 'react-icons/bs';
 import { CgFileDocument, CgReadme } from 'react-icons/cg';
 import {
@@ -12,6 +25,7 @@ import {
   FaExclamationTriangle,
   FaFileContract,
   FaFileSignature,
+  FaMarkdown,
   FaRobot,
   FaSignature,
   FaSlack,
@@ -236,6 +250,7 @@ export const QUERIES: SampleQuery[] = [
 ];
 
 export const CATEGORY_ICONS = {
+  [ScoreType.AgentReadiness]: <RiRobot2Line />,
   [ScoreType.BestPractices]: <RiShieldStarLine />,
   [ScoreType.Documentation]: <HiOutlinePencilAlt />,
   [ScoreType.Global]: <BiTrophy />,
@@ -245,6 +260,7 @@ export const CATEGORY_ICONS = {
 };
 
 export const CATEGORY_NAMES = {
+  [ScoreType.AgentReadiness]: 'Agent Readiness',
   [ScoreType.BestPractices]: 'Best Practices',
   [ScoreType.Documentation]: 'Documentation',
   [ScoreType.Global]: 'Global',
@@ -267,20 +283,6 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     name: 'Adopters',
     legend: <span>List of organizations using this project in production or at stages of testing</span>,
     reference: '/docs/topics/checks/#adopters',
-  },
-  [ReportOption.AgentReadiness]: {
-    icon: <RiRobot2Line />,
-    name: 'Agent readiness',
-    legend: (
-      <span>
-        The project's documentation should provide an{' '}
-        <ExternalLink className="d-inline-block text-decoration-underline" href="https://llmstxt.org">
-          llms.txt
-        </ExternalLink>{' '}
-        index so AI agents can discover and consume it
-      </span>
-    ),
-    reference: '/docs/topics/checks/#agent-readiness',
   },
   [ReportOption.Analytics]: {
     icon: <FaChartBar />,
@@ -307,6 +309,16 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
       </span>
     ),
     reference: '/docs/topics/checks/#artifact-hub-badge',
+  },
+  [ReportOption.Authentication]: {
+    icon: <BiKey />,
+    name: 'Authentication',
+    legend: (
+      <span>
+        The project's documentation should be accessible to AI agents without authentication gates or paywalls
+      </span>
+    ),
+    reference: '/docs/topics/checks/#authentication',
   },
   [ReportOption.BinaryArtifacts]: {
     icon: <GoFileBinary />,
@@ -353,6 +365,31 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
       </span>
     ),
     reference: '/docs/topics/checks/#community-meeting',
+  },
+  [ReportOption.ContentDiscoverability]: {
+    icon: <BiCompass />,
+    name: 'Content discoverability',
+    legend: (
+      <span>
+        The project's website should provide a valid{' '}
+        <ExternalLink className="d-inline-block text-decoration-underline" href="https://llmstxt.org">
+          llms.txt
+        </ExternalLink>{' '}
+        index so AI agents can discover its documentation
+      </span>
+    ),
+    reference: '/docs/topics/checks/#content-discoverability',
+  },
+  [ReportOption.ContentStructure]: {
+    icon: <BiSitemap />,
+    name: 'Content structure',
+    legend: (
+      <span>
+        The project's documentation content should be well structured, with quality section headers and valid code
+        blocks
+      </span>
+    ),
+    reference: '/docs/topics/checks/#content-structure',
   },
   [ReportOption.Contributing]: {
     icon: <HiTerminal />,
@@ -432,6 +469,23 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     ),
     reference: '/docs/topics/checks/#maintainers',
   },
+  [ReportOption.MarkdownAvailability]: {
+    icon: <FaMarkdown />,
+    name: 'Markdown availability',
+    legend: <span>The project's documentation pages should be available as Markdown for AI agents to consume</span>,
+    reference: '/docs/topics/checks/#markdown-availability',
+  },
+  [ReportOption.Observability]: {
+    icon: <BiPulse />,
+    name: 'Observability',
+    legend: (
+      <span>
+        The project's website llms.txt index should cover its documentation pages, and their Markdown version should
+        match the HTML one
+      </span>
+    ),
+    reference: '/docs/topics/checks/#observability',
+  },
   [ReportOption.OpenSSFBadge]: {
     icon: <BiMedal />,
     name: 'OpenSSF best practices badge',
@@ -452,6 +506,16 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
       <span>Scorecard assesses open source projects for security risks through a series of automated checks</span>
     ),
     reference: '/docs/topics/checks/#openssf-scorecard-badge',
+  },
+  [ReportOption.PageSize]: {
+    icon: <BiFile />,
+    name: 'Page size',
+    legend: (
+      <span>
+        The project's documentation pages should be reasonably sized and not require JavaScript to render their content
+      </span>
+    ),
+    reference: '/docs/topics/checks/#page-size',
   },
   [ReportOption.Readme]: {
     icon: <CgReadme />,
@@ -559,6 +623,14 @@ export const REPORT_OPTIONS: ReportOptionInfo = {
     legend: <span>Projects sites should have the Linux Foundation trademark disclaimer</span>,
     reference: '/docs/topics/checks/#trademark-disclaimer',
   },
+  [ReportOption.UrlStability]: {
+    icon: <BiLink />,
+    name: 'URL stability',
+    legend: (
+      <span>The project's documentation URLs should be stable and use proper HTTP status codes and redirects</span>
+    ),
+    reference: '/docs/topics/checks/#url-stability',
+  },
   [ReportOption.Website]: {
     icon: <BiWorld />,
     name: 'Website',
@@ -576,7 +648,6 @@ export type FoundationInfo = {
 export const CHECKS_PER_CATEGORY: ChecksPerCategory = {
   [ScoreType.Documentation]: [
     ReportOption.Adopters,
-    ReportOption.AgentReadiness,
     ReportOption.Changelog,
     ReportOption.CodeOfConduct,
     ReportOption.Contributing,
@@ -586,6 +657,15 @@ export const CHECKS_PER_CATEGORY: ChecksPerCategory = {
     ReportOption.Roadmap,
     ReportOption.SummaryTable,
     ReportOption.Website,
+  ],
+  [ScoreType.AgentReadiness]: [
+    ReportOption.Authentication,
+    ReportOption.ContentDiscoverability,
+    ReportOption.ContentStructure,
+    ReportOption.MarkdownAvailability,
+    ReportOption.Observability,
+    ReportOption.PageSize,
+    ReportOption.UrlStability,
   ],
   [ScoreType.License]: [ReportOption.SPDX, ReportOption.ApprovedLicense, ReportOption.LicenseScanning],
   [ScoreType.BestPractices]: [

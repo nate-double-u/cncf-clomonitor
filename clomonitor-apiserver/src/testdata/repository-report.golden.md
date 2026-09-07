@@ -9,20 +9,20 @@
 
 ### Checks passed per category
 
-| Category       |                                           Score |
-| :------------- | ----------------------------------------------: |
-| Documentation  |  100% |
-| License        |        100% |
-| Best Practices | 100% |
-| Security       |       100% |
-| Legal          |          100% |
+| Category        |                                            Score |
+| :-------------- | -----------------------------------------------: |
+| Documentation   |   100% |
+| Agent Readiness | 100% |
+| License         |         100% |
+| Best Practices  |  100% |
+| Security        |        100% |
+| Legal           |           100% |
 
 ## Checks
 
 ### Documentation [100%]
 
   - [x] Adopters ([_docs_](https://clomonitor.io/docs/topics/checks/#adopters))
-  - [x] Agent readiness ([_docs_](https://clomonitor.io/docs/topics/checks/#agent-readiness))
   - [x] Changelog ([_docs_](https://clomonitor.io/docs/topics/checks/#changelog))
   - [x] Code of conduct ([_docs_](https://clomonitor.io/docs/topics/checks/#code-of-conduct))
   - [x] Contributing ([_docs_](https://clomonitor.io/docs/topics/checks/#contributing))
@@ -32,6 +32,16 @@
   - [x] Roadmap ([_docs_](https://clomonitor.io/docs/topics/checks/#roadmap))
   - [x] Summary Table ([_docs_](https://clomonitor.io/docs/topics/checks/#summary-table))
   - [x] Website ([_docs_](https://clomonitor.io/docs/topics/checks/#website))
+  
+### Agent Readiness [100%]
+
+  - [x] Authentication ([_docs_](https://clomonitor.io/docs/topics/checks/#authentication))
+  - [x] Content discoverability ([_docs_](https://clomonitor.io/docs/topics/checks/#content-discoverability))
+  - [x] Content structure ([_docs_](https://clomonitor.io/docs/topics/checks/#content-structure))
+  - [x] Markdown availability ([_docs_](https://clomonitor.io/docs/topics/checks/#markdown-availability))
+  - [x] Observability ([_docs_](https://clomonitor.io/docs/topics/checks/#observability))
+  - [x] Page size ([_docs_](https://clomonitor.io/docs/topics/checks/#page-size))
+  - [x] URL stability ([_docs_](https://clomonitor.io/docs/topics/checks/#url-stability))
   
 ### License [100%]
 

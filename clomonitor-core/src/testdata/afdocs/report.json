@@ -1,0 +1,181 @@
+{
+ "url": "https://prometheus.io",
+ "timestamp": "2026-09-07T00:50:57.601Z",
+ "specUrl": "https://agentdocsspec.com/spec/",
+ "results": [
+  {
+   "id": "llms-txt-exists",
+   "category": "content-discoverability",
+   "status": "fail",
+   "message": "No llms.txt found at any candidate location (https://prometheus.io/llms.txt, https://prometheus.io/docs/llms.txt)"
+  },
+  {
+   "id": "llms-txt-valid",
+   "category": "content-discoverability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "llms-txt-exists"
+   ]
+  },
+  {
+   "id": "llms-txt-size",
+   "category": "content-discoverability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "llms-txt-exists"
+   ]
+  },
+  {
+   "id": "llms-txt-links-resolve",
+   "category": "content-discoverability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "llms-txt-exists"
+   ]
+  },
+  {
+   "id": "llms-txt-links-markdown",
+   "category": "content-discoverability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "llms-txt-exists"
+   ]
+  },
+  {
+   "id": "llms-txt-directive-html",
+   "category": "content-discoverability",
+   "status": "fail",
+   "message": "No llms.txt directive found in HTML of any of 50 sampled pages"
+  },
+  {
+   "id": "llms-txt-directive-md",
+   "category": "content-discoverability",
+   "status": "fail",
+   "message": "Could not fetch markdown for any of 50 pages; 50 had no markdown version"
+  },
+  {
+   "id": "markdown-url-support",
+   "category": "markdown-availability",
+   "status": "fail",
+   "message": "No sampled pages support .md URLs (0/50 tested)"
+  },
+  {
+   "id": "content-negotiation",
+   "category": "markdown-availability",
+   "status": "fail",
+   "message": "Server ignores Accept: text/markdown header (0/50 sampled pages return markdown)"
+  },
+  {
+   "id": "rendering-strategy",
+   "category": "page-size",
+   "status": "pass",
+   "message": "All 50 sampled pages contain server-rendered content"
+  },
+  {
+   "id": "page-size-markdown",
+   "category": "page-size",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "markdown-url-support",
+    "content-negotiation"
+   ]
+  },
+  {
+   "id": "page-size-html",
+   "category": "page-size",
+   "status": "pass",
+   "message": "All 50 sampled pages under 50K chars (median 160K HTML \u2192 12K markdown (92% boilerplate))"
+  },
+  {
+   "id": "content-start-position",
+   "category": "page-size",
+   "status": "pass",
+   "message": "Content starts within first 10% on all 50 sampled pages (median 0%)"
+  },
+  {
+   "id": "tabbed-content-serialization",
+   "category": "content-structure",
+   "status": "pass",
+   "message": "No tabbed content detected across 50 sampled pages"
+  },
+  {
+   "id": "section-header-quality",
+   "category": "content-structure",
+   "status": "pass",
+   "message": "No tabbed content found; header quality check not applicable"
+  },
+  {
+   "id": "markdown-code-fence-validity",
+   "category": "content-structure",
+   "status": "skip",
+   "message": "Site does not serve markdown content; nothing to analyze"
+  },
+  {
+   "id": "http-status-codes",
+   "category": "url-stability",
+   "status": "pass",
+   "message": "All 50 sampled pages return proper error codes for bad URLs"
+  },
+  {
+   "id": "redirect-behavior",
+   "category": "url-stability",
+   "status": "pass",
+   "message": "All 7 redirect(s) across 50 sampled pages are same-host HTTP redirects"
+  },
+  {
+   "id": "llms-txt-coverage",
+   "category": "observability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "llms-txt-exists"
+   ]
+  },
+  {
+   "id": "markdown-content-parity",
+   "category": "observability",
+   "status": "skip",
+   "message": "Skipped: dependency check did not pass",
+   "dependsOn": [
+    "markdown-url-support",
+    "content-negotiation"
+   ]
+  },
+  {
+   "id": "cache-header-hygiene",
+   "category": "observability",
+   "status": "warn",
+   "message": "50 of 50 endpoints have moderate cache lifetimes (1\u201324 hours)"
+  },
+  {
+   "id": "auth-gate-detection",
+   "category": "authentication",
+   "status": "pass",
+   "message": "All 50 sampled pages are publicly accessible"
+  },
+  {
+   "id": "auth-alternative-access",
+   "category": "authentication",
+   "status": "skip",
+   "message": "All docs pages are publicly accessible; no alternative access paths needed"
+  }
+ ],
+ "summary": {
+  "total": 23,
+  "pass": 8,
+  "warn": 1,
+  "fail": 5,
+  "skip": 9,
+  "error": 0
+ },
+ "discoverySources": [
+  "sitemap"
+ ],
+ "testedPages": 50,
+ "samplingStrategy": "random"
+}

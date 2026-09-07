@@ -15,6 +15,12 @@ pub struct Score {
     pub documentation_weight: Option<usize>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub agent_readiness: Option<f64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub agent_readiness_weight: Option<usize>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -63,6 +69,10 @@ pub fn calculate(report: &Report) -> Score {
         &report.documentation.available(),
         &report.documentation.passed_or_exempt(),
     );
+    (score.agent_readiness, score.agent_readiness_weight) = calculate_section(
+        &report.agent_readiness.available(),
+        &report.agent_readiness.passed_or_exempt(),
+    );
     (score.license, score.license_weight) = calculate_section(
         &report.license.available(),
         &report.license.passed_or_exempt(),
@@ -81,6 +91,7 @@ pub fn calculate(report: &Report) -> Score {
     // Global
     let sections_scores = &[
         score.documentation,
+        score.agent_readiness,
         score.license,
         score.best_practices,
         score.security,
@@ -88,6 +99,7 @@ pub fn calculate(report: &Report) -> Score {
     ];
     let sections_weights = &[
         score.documentation_weight,
+        score.agent_readiness_weight,
         score.license_weight,
         score.best_practices_weight,
         score.security_weight,
@@ -135,6 +147,7 @@ pub fn merge(scores: &[Score]) -> Score {
     // calculate the coefficient we'll apply to each of the scores.
     let mut global_weights_sum = 0;
     let mut documentation_weights_sum = 0;
+    let mut agent_readiness_weights_sum = 0;
     let mut license_weights_sum = 0;
     let mut best_practices_weights_sum = 0;
     let mut security_weights_sum = 0;
@@ -142,6 +155,7 @@ pub fn merge(scores: &[Score]) -> Score {
     for score in scores {
         global_weights_sum += score.global_weight;
         documentation_weights_sum += score.documentation_weight.unwrap_or_default();
+        agent_readiness_weights_sum += score.agent_readiness_weight.unwrap_or_default();
         license_weights_sum += score.license_weight.unwrap_or_default();
         best_practices_weights_sum += score.best_practices_weight.unwrap_or_default();
         security_weights_sum += score.security_weight.unwrap_or_default();
@@ -168,6 +182,12 @@ pub fn merge(scores: &[Score]) -> Score {
             m.documentation,
             s.documentation,
             s.documentation_weight.unwrap_or_default() as f64 / documentation_weights_sum as f64,
+        );
+        m.agent_readiness = merge(
+            m.agent_readiness,
+            s.agent_readiness,
+            s.agent_readiness_weight.unwrap_or_default() as f64
+                / agent_readiness_weights_sum as f64,
         );
         m.license = merge(
             m.license,
@@ -253,7 +273,6 @@ mod tests {
             calculate(&Report {
                 documentation: Documentation {
                     adopters: Some(CheckOutput::passed()),
-                    agent_readiness: Some(CheckOutput::passed()),
                     code_of_conduct: Some(CheckOutput::passed()),
                     contributing: Some(CheckOutput::passed()),
                     changelog: Some(CheckOutput::passed()),
@@ -263,6 +282,15 @@ mod tests {
                     roadmap: Some(CheckOutput::passed()),
                     summary_table: Some(CheckOutput::passed()),
                     website: Some(CheckOutput::passed()),
+                },
+                agent_readiness: AgentReadiness {
+                    authentication: Some(CheckOutput::passed()),
+                    content_discoverability: Some(CheckOutput::passed()),
+                    content_structure: Some(CheckOutput::passed()),
+                    markdown_availability: Some(CheckOutput::passed()),
+                    observability: Some(CheckOutput::passed()),
+                    page_size: Some(CheckOutput::passed()),
+                    url_stability: Some(CheckOutput::passed()),
                 },
                 license: License {
                     license_approved: Some(CheckOutput::passed()),
@@ -304,9 +332,11 @@ mod tests {
             }),
             Score {
                 global: 99.999_999_999_999_99,
-                global_weight: 97,
+                global_weight: 103,
                 documentation: Some(99.999_999_999_999_99),
-                documentation_weight: Some(31),
+                documentation_weight: Some(30),
+                agent_readiness: Some(99.999_999_999_999_97),
+                agent_readiness_weight: Some(7),
                 license: Some(100.0),
                 license_weight: Some(20),
                 best_practices: Some(99.999_999_999_999_99),
@@ -325,7 +355,6 @@ mod tests {
             calculate(&Report {
                 documentation: Documentation {
                     adopters: Some(CheckOutput::not_passed()),
-                    agent_readiness: Some(CheckOutput::not_passed()),
                     code_of_conduct: Some(CheckOutput::not_passed()),
                     contributing: Some(CheckOutput::not_passed()),
                     changelog: Some(CheckOutput::not_passed()),
@@ -335,6 +364,15 @@ mod tests {
                     roadmap: Some(CheckOutput::not_passed()),
                     summary_table: Some(CheckOutput::not_passed()),
                     website: Some(CheckOutput::not_passed()),
+                },
+                agent_readiness: AgentReadiness {
+                    authentication: Some(CheckOutput::not_passed()),
+                    content_discoverability: Some(CheckOutput::not_passed()),
+                    content_structure: Some(CheckOutput::not_passed()),
+                    markdown_availability: Some(CheckOutput::not_passed()),
+                    observability: Some(CheckOutput::not_passed()),
+                    page_size: Some(CheckOutput::not_passed()),
+                    url_stability: Some(CheckOutput::not_passed()),
                 },
                 license: License {
                     license_approved: Some(CheckOutput::not_passed()),
@@ -372,9 +410,11 @@ mod tests {
             }),
             Score {
                 global: 0.0,
-                global_weight: 97,
+                global_weight: 103,
                 documentation: Some(0.0),
-                documentation_weight: Some(31),
+                documentation_weight: Some(30),
+                agent_readiness: Some(0.0),
+                agent_readiness_weight: Some(7),
                 license: Some(0.0),
                 license_weight: Some(20),
                 best_practices: Some(0.0),
@@ -393,7 +433,6 @@ mod tests {
             calculate(&Report {
                 documentation: Documentation {
                     adopters: None,
-                    agent_readiness: None,
                     code_of_conduct: None,
                     contributing: Some(CheckOutput::passed()),
                     changelog: Some(CheckOutput::passed()),
@@ -404,6 +443,7 @@ mod tests {
                     summary_table: None,
                     website: None,
                 },
+                agent_readiness: AgentReadiness::default(),
                 license: License {
                     license_approved: Some(CheckOutput::passed()),
                     license_scanning: Some(
@@ -447,6 +487,8 @@ mod tests {
                 global_weight: 76,
                 documentation: Some(100.0),
                 documentation_weight: Some(18),
+                agent_readiness: None,
+                agent_readiness_weight: None,
                 license: Some(100.0),
                 license_weight: Some(20),
                 best_practices: Some(100.0),
@@ -468,6 +510,8 @@ mod tests {
                     global_weight: 90,
                     documentation: Some(100.0),
                     documentation_weight: Some(30),
+                    agent_readiness: Some(100.0),
+                    agent_readiness_weight: Some(7),
                     license: Some(100.0),
                     license_weight: Some(20),
                     best_practices: Some(100.0),
@@ -482,6 +526,8 @@ mod tests {
                     global_weight: 45,
                     documentation: Some(0.0),
                     documentation_weight: Some(15),
+                    agent_readiness: Some(0.0),
+                    agent_readiness_weight: Some(7),
                     license: Some(0.0),
                     license_weight: Some(10),
                     best_practices: Some(0.0),
@@ -497,6 +543,8 @@ mod tests {
                 global_weight: 0,
                 documentation: Some(66.666_666_666_666_66),
                 documentation_weight: None,
+                agent_readiness: Some(50.0),
+                agent_readiness_weight: None,
                 license: Some(66.666_666_666_666_66),
                 license_weight: None,
                 best_practices: Some(66.666_666_666_666_66),

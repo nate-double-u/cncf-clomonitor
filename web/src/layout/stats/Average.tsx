@@ -1,3 +1,5 @@
+import { isUndefined } from 'lodash';
+
 import { CATEGORY_ICONS } from '../../data';
 import { ScoreType } from '../../types';
 import styles from './Average.module.css';
@@ -18,6 +20,13 @@ const Average = (props: Props) => {
           icon={CATEGORY_ICONS[ScoreType.Documentation]}
           value={props.data.documentation}
         />
+        {!isUndefined(props.data.agent_readiness) && (
+          <ProgressBar
+            title="Agent Readiness"
+            icon={CATEGORY_ICONS[ScoreType.AgentReadiness]}
+            value={props.data.agent_readiness}
+          />
+        )}
         <ProgressBar title="License" icon={CATEGORY_ICONS[ScoreType.License]} value={props.data.license} />
         <ProgressBar
           title="Best Practices"

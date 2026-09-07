@@ -25,7 +25,8 @@ RUN make build
 
 # Final stage
 FROM alpine:3.24.1
-RUN addgroup -S clomonitor && adduser -S clomonitor -G clomonitor
+RUN apk --no-cache add nodejs npm && addgroup -S clomonitor && adduser -S clomonitor -G clomonitor
+RUN npm install -g afdocs@0.20.0
 USER clomonitor
 WORKDIR /home/clomonitor
 COPY --from=builder /clomonitor/target/release/clomonitor-linter /usr/local/bin

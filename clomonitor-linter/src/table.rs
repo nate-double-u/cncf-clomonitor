@@ -55,6 +55,10 @@ pub(crate) fn display(
             cell_entry("Documentation"),
             cell_score(score.documentation),
         ])
+        .add_row(vec![
+            cell_entry("Agent readiness"),
+            cell_score(score.agent_readiness),
+        ])
         .add_row(vec![cell_entry("License"), cell_score(score.license)])
         .add_row(vec![
             cell_entry("Best practices"),
@@ -74,10 +78,6 @@ pub(crate) fn display(
         .add_row(vec![
             cell_entry("Documentation / Adopters"),
             cell_check(report.documentation.adopters.as_ref()),
-        ])
-        .add_row(vec![
-            cell_entry("Documentation / Agent readiness"),
-            cell_check(report.documentation.agent_readiness.as_ref()),
         ])
         .add_row(vec![
             cell_entry("Documentation / Changelog"),
@@ -114,6 +114,34 @@ pub(crate) fn display(
         .add_row(vec![
             cell_entry("Documentation / Website"),
             cell_check(report.documentation.website.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Authentication"),
+            cell_check(report.agent_readiness.authentication.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Content discoverability"),
+            cell_check(report.agent_readiness.content_discoverability.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Content structure"),
+            cell_check(report.agent_readiness.content_structure.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Markdown availability"),
+            cell_check(report.agent_readiness.markdown_availability.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Observability"),
+            cell_check(report.agent_readiness.observability.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / Page size"),
+            cell_check(report.agent_readiness.page_size.as_ref()),
+        ])
+        .add_row(vec![
+            cell_entry("Agent readiness / URL stability"),
+            cell_check(report.agent_readiness.url_stability.as_ref()),
         ])
         .add_row(vec![
             cell_entry("License"),
@@ -321,7 +349,8 @@ mod tests {
 
     use clomonitor_core::{
         linter::{
-            BestPractices, CheckOutput, CheckSet, Documentation, Legal, License, Report, Security,
+            AgentReadiness, BestPractices, CheckOutput, CheckSet, Documentation, Legal, License,
+            Report, Security,
         },
         score::Score,
     };
@@ -336,7 +365,6 @@ mod tests {
         let report = Report {
             documentation: Documentation {
                 adopters: Some(CheckOutput::passed()),
-                agent_readiness: Some(CheckOutput::passed()),
                 code_of_conduct: Some(CheckOutput::passed()),
                 contributing: Some(CheckOutput::passed()),
                 changelog: Some(CheckOutput::passed()),
@@ -346,6 +374,15 @@ mod tests {
                 roadmap: Some(CheckOutput::passed()),
                 summary_table: Some(CheckOutput::passed()),
                 website: Some(CheckOutput::passed()),
+            },
+            agent_readiness: AgentReadiness {
+                authentication: Some(CheckOutput::passed()),
+                content_discoverability: Some(CheckOutput::passed()),
+                content_structure: Some(CheckOutput::passed()),
+                markdown_availability: Some(CheckOutput::passed()),
+                observability: Some(CheckOutput::passed()),
+                page_size: Some(CheckOutput::passed()),
+                url_stability: Some(CheckOutput::passed()),
             },
             license: License {
                 license_approved: Some(CheckOutput::passed()),
@@ -385,9 +422,11 @@ mod tests {
         };
         let score = Score {
             global: 99.999_999_999_999_99,
-            global_weight: 5,
+            global_weight: 6,
             documentation: Some(100.0),
             documentation_weight: Some(1),
+            agent_readiness: Some(100.0),
+            agent_readiness_weight: Some(1),
             license: Some(100.0),
             license_weight: Some(1),
             best_practices: Some(100.0),

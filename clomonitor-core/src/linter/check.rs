@@ -4,8 +4,12 @@ use which::which;
 
 use super::{
     CheckSet, LinterInput,
-    checks::{CHECKS, signed_releases},
+    checks::{
+        CHECKS, authentication, content_discoverability, content_structure, markdown_availability,
+        observability, page_size, signed_releases, url_stability, util::helpers::should_skip_check,
+    },
     datasource::{
+        afdocs::{self, AfdocsCheckResult, AfdocsCheckStatus, AfdocsReport},
         github,
         scorecard::{Scorecard, ScorecardCheck, scorecard},
         security_insights::SecurityInsights,
@@ -31,6 +35,7 @@ pub(crate) struct CheckInput<'a> {
     pub gh_md: github::md::MdRepository,
     pub scorecard: Result<Scorecard>,
     pub security_insights: Result<Option<SecurityInsights>>,
+    pub afdocs: Result<Option<AfdocsReport>>,
 }
 
 impl CheckInput<'_> {
@@ -39,6 +44,11 @@ impl CheckInput<'_> {
         if which("scorecard").is_err() {
             return Err(format_err!(
                 "scorecard not found in PATH (https://github.com/ossf/scorecard#installation)"
+            ));
+        }
+        if afdocs_required(&li.check_sets) && which("afdocs").is_err() {
+            return Err(format_err!(
+                "afdocs not found in PATH (https://www.npmjs.com/package/afdocs)"
             ));
         }
 
@@ -52,10 +62,28 @@ impl CheckInput<'_> {
         // Get GitHub metadata
         let gh_md = github::metadata(&li.url, &li.github_token).await?;
 
-        // Get OpenSSF scorecard
-        let scorecard = scorecard(&li.url, &li.github_token)
-            .await
-            .context("error running scorecard command");
+        // Get OpenSSF scorecard and afdocs report. The afdocs command does not
+        // use the GitHub token, so running both concurrently cannot trigger the
+        // GitHub secondary rate limits mentioned above. The afdocs report is
+        // only fetched when any of the checks that rely on it will be run.
+        let (scorecard, afdocs) = tokio::join!(
+            async {
+                scorecard(&li.url, &li.github_token)
+                    .await
+                    .context("error running scorecard command")
+            },
+            async {
+                match &gh_md.homepage_url {
+                    Some(url) if !url.is_empty() && afdocs_required(&li.check_sets) => {
+                        afdocs::afdocs(url)
+                            .await
+                            .map(Some)
+                            .context("error running afdocs command")
+                    }
+                    _ => Ok(None),
+                }
+            }
+        );
 
         // Get OpenSSF security insights.
         let security_insights = SecurityInsights::new(&li.root);
@@ -67,9 +95,29 @@ impl CheckInput<'_> {
             gh_md,
             scorecard,
             security_insights,
+            afdocs,
         };
         Ok(ci)
     }
+}
+
+/// Check ids of the checks that rely on the afdocs report.
+const AFDOCS_CHECKS: [CheckId; 7] = [
+    authentication::ID,
+    content_discoverability::ID,
+    content_structure::ID,
+    markdown_availability::ID,
+    observability::ID,
+    page_size::ID,
+    url_stability::ID,
+];
+
+/// Check if any of the checks that rely on the afdocs report will be run for
+/// the check sets provided.
+fn afdocs_required(check_sets: &[CheckSet]) -> bool {
+    AFDOCS_CHECKS
+        .iter()
+        .any(|check_id| !should_skip_check(check_id, check_sets))
 }
 
 /// Check output information.
@@ -235,6 +283,77 @@ impl<T> From<Result<Option<&ScorecardCheck>, &Error>> for CheckOutput<T> {
     }
 }
 
+impl<T> From<Result<Option<Vec<&AfdocsCheckResult>>, &Error>> for CheckOutput<T> {
+    fn from(results: Result<Option<Vec<&AfdocsCheckResult>>, &Error>) -> Self {
+        match results {
+            Ok(Some(results)) if !results.is_empty() => {
+                // Prepare category name from the category of the first result
+                let category_name = match results[0].category.as_str() {
+                    "url-stability" => "URL stability".to_string(),
+                    slug => {
+                        let category = slug.replace('-', " ");
+                        let mut chars = category.chars();
+                        match chars.next() {
+                            Some(first) => {
+                                first.to_uppercase().collect::<String>() + chars.as_str()
+                            }
+                            None => String::new(),
+                        }
+                    }
+                };
+
+                // Prepare check output based on the results statuses
+                let all_skipped = results.iter().all(|r| r.status == AfdocsCheckStatus::Skip);
+                let some_failed = results.iter().any(|r| {
+                    matches!(r.status, AfdocsCheckStatus::Fail | AfdocsCheckStatus::Error)
+                });
+                let (mut output, result) = if all_skipped {
+                    (
+                        CheckOutput::exempt().exemption_reason(Some(
+                            "afdocs skipped all checks in this category for this website"
+                                .to_string(),
+                        )),
+                        "skipped (afdocs skipped all checks in this category for this website)",
+                    )
+                } else if some_failed {
+                    (
+                        CheckOutput::not_passed(),
+                        "not passed (a category passes when none of its checks fail)",
+                    )
+                } else {
+                    (
+                        CheckOutput::passed(),
+                        "passed (a category passes when none of its checks fail)",
+                    )
+                };
+                output.details = Some(format!(
+                    r"# {} AFDocs checks
+
+**Result**: {}
+
+{}
+
+**Please see the [Agent-Friendly Documentation Spec]({}) for more details**",
+                    category_name,
+                    result,
+                    results
+                        .iter()
+                        .map(|r| format!("- **{}** `{}`: {}", r.status, r.id, r.message))
+                        .collect::<Vec<String>>()
+                        .join("\n"),
+                    afdocs::SPEC_URL,
+                ));
+                output
+            }
+            Ok(_) => CheckOutput::failed().fail_reason(Some(
+                "category not found in the afdocs report (possible afdocs version mismatch)"
+                    .to_string(),
+            )),
+            Err(err) => CheckOutput::failed().fail_reason(Some(format!("{err:#}"))),
+        }
+    }
+}
+
 /// Wrapper macro that takes care of running some common pre-check operations
 /// and the synchronous check function.
 macro_rules! run {
@@ -356,8 +475,10 @@ mod tests {
 
     #[test]
     fn check_output_from_scorecard_check_not_available() {
+        let sc_check: Result<Option<&ScorecardCheck>, &Error> = Ok(None);
+
         assert_eq!(
-            CheckOutput::<()>::from(Ok(None)),
+            CheckOutput::<()>::from(sc_check),
             CheckOutput {
                 passed: false,
                 ..Default::default()
@@ -378,5 +499,173 @@ mod tests {
                 ..Default::default()
             }
         );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_passed() {
+        let results = [
+            AfdocsCheckResult {
+                id: "markdown-url-support".to_string(),
+                category: "markdown-availability".to_string(),
+                status: AfdocsCheckStatus::Pass,
+                message: "Markdown URLs supported".to_string(),
+            },
+            AfdocsCheckResult {
+                id: "content-negotiation".to_string(),
+                category: "markdown-availability".to_string(),
+                status: AfdocsCheckStatus::Warn,
+                message: "partial support".to_string(),
+            },
+        ];
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> =
+            Ok(Some(results.iter().collect()));
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                passed: true,
+                details: Some("# Markdown availability AFDocs checks\n\n**Result**: passed (a category passes when none of its checks fail)\n\n- **PASS** `markdown-url-support`: Markdown URLs supported\n- **WARN** `content-negotiation`: partial support\n\n**Please see the [Agent-Friendly Documentation Spec](https://agentdocsspec.com/spec/) for more details**".to_string()),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_not_passed() {
+        let results = [
+            AfdocsCheckResult {
+                id: "llms-txt-exists".to_string(),
+                category: "content-discoverability".to_string(),
+                status: AfdocsCheckStatus::Warn,
+                message: "llms.txt found but only reachable via cross-host redirect".to_string(),
+            },
+            AfdocsCheckResult {
+                id: "llms-txt-directive-html".to_string(),
+                category: "content-discoverability".to_string(),
+                status: AfdocsCheckStatus::Fail,
+                message: "No llms.txt directive found in HTML of any of 1 pages".to_string(),
+            },
+        ];
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> =
+            Ok(Some(results.iter().collect()));
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                passed: false,
+                details: Some("# Content discoverability AFDocs checks\n\n**Result**: not passed (a category passes when none of its checks fail)\n\n- **WARN** `llms-txt-exists`: llms.txt found but only reachable via cross-host redirect\n- **FAIL** `llms-txt-directive-html`: No llms.txt directive found in HTML of any of 1 pages\n\n**Please see the [Agent-Friendly Documentation Spec](https://agentdocsspec.com/spec/) for more details**".to_string()),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_error_not_passed() {
+        let results = [AfdocsCheckResult {
+            id: "http-status-codes".to_string(),
+            category: "url-stability".to_string(),
+            status: AfdocsCheckStatus::Error,
+            message: "check errored".to_string(),
+        }];
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> =
+            Ok(Some(results.iter().collect()));
+
+        let output = CheckOutput::<()>::from(results);
+        assert!(!output.passed);
+        assert!(!output.exempt);
+        assert!(
+            output
+                .details
+                .unwrap()
+                .starts_with("# URL stability AFDocs checks")
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_all_skipped() {
+        let results = [AfdocsCheckResult {
+            id: "llms-txt-coverage".to_string(),
+            category: "observability".to_string(),
+            status: AfdocsCheckStatus::Skip,
+            message: "llms.txt not found".to_string(),
+        }];
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> =
+            Ok(Some(results.iter().collect()));
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                exempt: true,
+                exemption_reason: Some(
+                    "afdocs skipped all checks in this category for this website".to_string()
+                ),
+                details: Some("# Observability AFDocs checks\n\n**Result**: skipped (afdocs skipped all checks in this category for this website)\n\n- **SKIP** `llms-txt-coverage`: llms.txt not found\n\n**Please see the [Agent-Friendly Documentation Spec](https://agentdocsspec.com/spec/) for more details**".to_string()),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_not_available() {
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> = Ok(None);
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                failed: true,
+                fail_reason: Some(
+                    "category not found in the afdocs report (possible afdocs version mismatch)"
+                        .to_string()
+                ),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_empty_results() {
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> = Ok(Some(vec![]));
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                failed: true,
+                fail_reason: Some(
+                    "category not found in the afdocs report (possible afdocs version mismatch)"
+                        .to_string()
+                ),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn check_output_from_afdocs_category_failed() {
+        let err = format_err!("fake error");
+        let results: Result<Option<Vec<&AfdocsCheckResult>>, &Error> = Err(&err);
+
+        assert_eq!(
+            CheckOutput::<()>::from(results),
+            CheckOutput {
+                failed: true,
+                fail_reason: Some("fake error".to_string()),
+                ..Default::default()
+            }
+        );
+    }
+
+    #[test]
+    fn afdocs_required_matching_check_sets() {
+        assert!(afdocs_required(&[CheckSet::Community]));
+        assert!(afdocs_required(&[CheckSet::Docs]));
+        assert!(afdocs_required(&[CheckSet::Code, CheckSet::Community]));
+    }
+
+    #[test]
+    fn afdocs_required_no_matching_check_sets() {
+        assert!(!afdocs_required(&[CheckSet::Code]));
+        assert!(!afdocs_required(&[CheckSet::CodeLite]));
+        assert!(!afdocs_required(&[CheckSet::Code, CheckSet::CodeLite]));
+        assert!(!afdocs_required(&[]));
     }
 }

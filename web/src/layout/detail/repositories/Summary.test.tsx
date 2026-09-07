@@ -81,7 +81,7 @@ describe('Summary', () => {
       expect(screen.getAllByText('100')).toHaveLength(5);
       expect(screen.getAllByText('85')).toHaveLength(3);
       expect(screen.getAllByText('70')).toHaveLength(3);
-      expect(screen.getAllByText('n/a')).toHaveLength(16);
+      expect(screen.getAllByText('n/a')).toHaveLength(22);
     });
   });
 
@@ -111,7 +111,7 @@ describe('Summary', () => {
 
     expect(screen.getAllByText('90')).toHaveLength(2);
     expect(screen.getAllByText('87')).toHaveLength(2);
-    expect(screen.getAllByText('n/a')).toHaveLength(6);
+    expect(screen.getAllByText('n/a')).toHaveLength(8);
   });
 
   it('renders component', async () => {

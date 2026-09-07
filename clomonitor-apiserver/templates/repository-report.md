@@ -11,13 +11,14 @@
 
 ### Checks passed per category
 
-| Category       |                                           Score |
-| :------------- | ----------------------------------------------: |
-| Documentation  |  {{ category_score(score.documentation) }} |
-| License        |        {{ category_score(score.license) }} |
-| Best Practices | {{ category_score(score.best_practices) }} |
-| Security       |       {{ category_score(score.security) }} |
-| Legal          |          {{ category_score(score.legal) }} |
+| Category        |                                            Score |
+| :-------------- | -----------------------------------------------: |
+| Documentation   |   {{ category_score(score.documentation) }} |
+| Agent Readiness | {{ category_score(score.agent_readiness) }} |
+| License         |         {{ category_score(score.license) }} |
+| Best Practices  |  {{ category_score(score.best_practices) }} |
+| Security        |        {{ category_score(score.security) }} |
+| Legal           |           {{ category_score(score.legal) }} |
 
 ## Checks
 
@@ -25,7 +26,6 @@
 ### Documentation [{{ value.round() }}%]
 
   {{ check("adopters", "Adopters", report.documentation.adopters) -}}
-  {{ check("agent-readiness", "Agent readiness", report.documentation.agent_readiness) -}}
   {{ check("changelog", "Changelog", report.documentation.changelog) -}}
   {{ check("code-of-conduct", "Code of conduct", report.documentation.code_of_conduct) -}}
   {{ check("contributing", "Contributing", report.documentation.contributing) -}}
@@ -35,6 +35,18 @@
   {{ check("roadmap", "Roadmap", report.documentation.roadmap) -}}
   {{ check("summary-table", "Summary Table", report.documentation.summary_table) -}}
   {{ check("website", "Website", report.documentation.website) -}}
+
+{%- endif %}
+{%- if let Some(value) = score.agent_readiness %}
+### Agent Readiness [{{ value.round() }}%]
+
+  {{ check("authentication", "Authentication", report.agent_readiness.authentication) -}}
+  {{ check("content-discoverability", "Content discoverability", report.agent_readiness.content_discoverability) -}}
+  {{ check("content-structure", "Content structure", report.agent_readiness.content_structure) -}}
+  {{ check("markdown-availability", "Markdown availability", report.agent_readiness.markdown_availability) -}}
+  {{ check("observability", "Observability", report.agent_readiness.observability) -}}
+  {{ check("page-size", "Page size", report.agent_readiness.page_size) -}}
+  {{ check("url-stability", "URL stability", report.agent_readiness.url_stability) -}}
 
 {%- endif %}
 {%- if let Some(value) = score.license %}

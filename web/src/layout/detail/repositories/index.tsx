@@ -194,6 +194,17 @@ const RepositoriesList = (props: Props) => {
                   <Row
                     repoName={repo.name}
                     reportId={repo.report.report_id}
+                    name={ScoreType.AgentReadiness}
+                    label="Agent Readiness"
+                    data={repo.report.data.agent_readiness}
+                    icon={CATEGORY_ICONS[ScoreType.AgentReadiness]}
+                    score={!isUndefined(repo.score) ? repo.score.agent_readiness : undefined}
+                    referenceUrl="/docs/topics/checks/#agent-readiness"
+                    getAnchorLink={getAnchorLink}
+                  />
+                  <Row
+                    repoName={repo.name}
+                    reportId={repo.report.report_id}
                     name={ScoreType.License}
                     label="License"
                     data={repo.report.data.license}

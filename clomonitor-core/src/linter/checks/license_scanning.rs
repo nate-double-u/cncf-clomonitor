@@ -70,6 +70,7 @@ mod tests {
                 gh_md: MdRepository::default(),
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::not_passed(),
@@ -88,6 +89,7 @@ mod tests {
                 gh_md: MdRepository::default(),
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::not_passed(),
@@ -108,6 +110,7 @@ mod tests {
                 gh_md: MdRepository::default(),
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::passed().url(Some("license_scanning_url".to_string())),

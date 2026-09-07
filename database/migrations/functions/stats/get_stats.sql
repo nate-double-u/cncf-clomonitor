@@ -98,6 +98,7 @@ returns json as $$
                             (
                                 select jsonb_build_object(
                                     'documentation', (average_section_score(p_foundation, 'documentation', null)),
+                                    'agent_readiness', (average_section_score(p_foundation, 'agent_readiness', null)),
                                     'license', (average_section_score(p_foundation, 'license', null)),
                                     'best_practices', (average_section_score(p_foundation, 'best_practices', null)),
                                     'security', (average_section_score(p_foundation, 'security', null)),
@@ -113,6 +114,7 @@ returns json as $$
                             (
                                 select jsonb_build_object(
                                     'documentation', (average_section_score(p_foundation, 'documentation', maturity)),
+                                    'agent_readiness', (average_section_score(p_foundation, 'agent_readiness', maturity)),
                                     'license', (average_section_score(p_foundation, 'license', maturity)),
                                     'best_practices', (average_section_score(p_foundation, 'best_practices', maturity)),
                                     'security', (average_section_score(p_foundation, 'security', maturity)),
@@ -153,7 +155,6 @@ returns json as $$
             'passing_check', json_build_object(
                 'documentation', json_build_object(
                     'adopters', repositories_passing_check(p_foundation, 'documentation', 'adopters'),
-                    'agent_readiness', repositories_passing_check(p_foundation, 'documentation', 'agent_readiness'),
                     'changelog', repositories_passing_check(p_foundation, 'documentation', 'changelog'),
                     'code_of_conduct', repositories_passing_check(p_foundation, 'documentation', 'code_of_conduct'),
                     'contributing', repositories_passing_check(p_foundation, 'documentation', 'contributing'),
@@ -163,6 +164,15 @@ returns json as $$
                     'roadmap', repositories_passing_check(p_foundation, 'documentation', 'roadmap'),
                     'summary_table', repositories_passing_check(p_foundation, 'documentation', 'summary_table'),
                     'website', repositories_passing_check(p_foundation, 'documentation', 'website')
+                ),
+                'agent_readiness', json_build_object(
+                    'authentication', repositories_passing_check(p_foundation, 'agent_readiness', 'authentication'),
+                    'content_discoverability', repositories_passing_check(p_foundation, 'agent_readiness', 'content_discoverability'),
+                    'content_structure', repositories_passing_check(p_foundation, 'agent_readiness', 'content_structure'),
+                    'markdown_availability', repositories_passing_check(p_foundation, 'agent_readiness', 'markdown_availability'),
+                    'observability', repositories_passing_check(p_foundation, 'agent_readiness', 'observability'),
+                    'page_size', repositories_passing_check(p_foundation, 'agent_readiness', 'page_size'),
+                    'url_stability', repositories_passing_check(p_foundation, 'agent_readiness', 'url_stability')
                 ),
                 'license', json_build_object(
                     'license_approved', repositories_passing_check(p_foundation, 'license', 'license_approved'),

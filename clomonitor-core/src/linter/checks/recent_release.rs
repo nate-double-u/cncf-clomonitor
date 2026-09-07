@@ -56,6 +56,7 @@ mod tests {
                 },
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::not_passed(),
@@ -87,6 +88,7 @@ mod tests {
                 },
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::not_passed(),
@@ -118,6 +120,7 @@ mod tests {
                 },
                 scorecard: Err(format_err!("no scorecard available")),
                 security_insights: Ok(None),
+                afdocs: Ok(None),
             })
             .unwrap(),
             CheckOutput::passed().url(Some("release_url".to_string())),

@@ -57,6 +57,30 @@ insert into report (
 ) values (
     '00000000-0000-0000-0001-000000000000',
     '{
+        "agent_readiness": {
+            "authentication": {
+                "passed": true
+            },
+            "content_discoverability": {
+                "url": "https://www.fluentd.org/llms.txt",
+                "passed": true
+            },
+            "content_structure": {
+                "passed": false
+            },
+            "markdown_availability": {
+                "passed": true
+            },
+            "observability": {
+                "passed": false
+            },
+            "page_size": {
+                "passed": true
+            },
+            "url_stability": {
+                "passed": true
+            }
+        },
         "legal": {
             "trademark_disclaimer": {
                 "passed": false
@@ -128,10 +152,6 @@ insert into report (
             },
             "adopters": {
                 "url": "https://github.com/fluent/fluentd/blob/master/ADOPTERS.md",
-                "passed": true
-            },
-            "agent_readiness": {
-                "url": "https://www.fluentd.org/llms.txt",
                 "passed": true
             },
             "changelog": {
@@ -231,9 +251,9 @@ select results_eq(
     $$,
     $$
         values
-            ('Foundation,Project,Repository URL,Check Sets,Adopters,Agent Readiness,Changelog,Code of Conduct,Contributing,Governance,Maintainers,Readme,Roadmap,Summary Table,Website,License Approved,License Scanning,License SPDX ID,Analytics,ArtifactHub Badge,CLA,Community Meeting,DCO,GitHub discussions,OpenSSF best practices badge,OpenSSF Scorecard badge,Recent Release,Slack Presence,Binary Artifacts,Code Review,Dangerous Workflow,Dependencies Policy,Dependency Update Tool,Maintained,SBOM,Security Insights,Security Policy,Signed Releases,Token Permissions,Trademark Disclaimer'),
-            ('cncf,project1,https://repo1.url,"{code,community}",t,t,t,t,t,t,t,t,f,f,t,t,f,Apache-2.0,GA4,f,t,f,t,t,t,t,t,f,t,t,t,t,f,t,f,t,t,f,f,f'),
-            ('cncf,project1,https://repo2.url,{docs},,,,,,,,f,,,,t,,Apache-2.0,,,,,,,,,,,,,,,,,,,,,,')
+            ('Foundation,Project,Repository URL,Check Sets,Adopters,Changelog,Code of Conduct,Contributing,Governance,Maintainers,Readme,Roadmap,Summary Table,Website,Authentication,Content Discoverability,Content Structure,Markdown Availability,Observability,Page Size,URL Stability,License Approved,License Scanning,License SPDX ID,Analytics,ArtifactHub Badge,CLA,Community Meeting,DCO,GitHub discussions,OpenSSF best practices badge,OpenSSF Scorecard badge,Recent Release,Slack Presence,Binary Artifacts,Code Review,Dangerous Workflow,Dependencies Policy,Dependency Update Tool,Maintained,SBOM,Security Insights,Security Policy,Signed Releases,Token Permissions,Trademark Disclaimer'),
+            ('cncf,project1,https://repo1.url,"{code,community}",t,t,t,t,t,t,t,f,f,t,t,t,f,t,f,t,t,t,f,Apache-2.0,GA4,f,t,f,t,t,t,t,t,f,t,t,t,t,f,t,f,t,t,f,f,f'),
+            ('cncf,project1,https://repo2.url,{docs},,,,,,,f,,,,,,,,,,,t,,Apache-2.0,,,,,,,,,,,,,,,,,,,,,,')
     $$,
     'Return all repositories with all checks'
 );

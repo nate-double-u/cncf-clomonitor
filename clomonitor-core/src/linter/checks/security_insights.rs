@@ -60,6 +60,7 @@ mod tests {
                     .canonicalize()
                     .unwrap(),
             ),
+            afdocs: Ok(None),
         })
         .unwrap();
 
@@ -83,6 +84,7 @@ mod tests {
                     .canonicalize()
                     .unwrap(),
             ),
+            afdocs: Ok(None),
         })
         .unwrap();
 
@@ -106,6 +108,7 @@ mod tests {
                     .canonicalize()
                     .unwrap(),
             ),
+            afdocs: Ok(None),
         })
         .unwrap();
 
